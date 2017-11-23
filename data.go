@@ -1,7 +1,5 @@
 package countryip
 
-import "encoding/json"
-
 type Config struct {
 	Db struct {
 		Redis struct {
@@ -23,42 +21,21 @@ type Config struct {
 }
 
 type Api interface {
-	GetCountry() string
+	GetCountryNameByIp(ip string) (string, error)
+	GetUrl(ip string) string
 	Unmarshal(b []byte) error
+	GetCountryName() string
 }
 
-type FreeGeoIp struct {
-	Ip          string `json:"ip"`
-	CountryName string `json:"country_name"`
-}
-
-func (fr *FreeGeoIp) Unmarshal(b []byte) error {
-	e := json.Unmarshal(b, &fr)
+func RequestAndUnmarshal(api Api, ip string) (string, error) {
+	url := api.GetUrl(ip)
+	b, e := GetRequest(url)
 	if e != nil {
-		return e
+		return "", e
 	}
-	return nil
-}
-
-func (fip *FreeGeoIp) GetCountry() string {
-	return fip.CountryName
-}
-
-type NekudoGeoIp struct {
-	Country struct {
-		Name string `json:"name"`
-	} `json:"country"`
-	Ip string `json:"ip"`
-}
-
-func (ng *NekudoGeoIp) GetCountry() string {
-	return ng.Country.Name
-}
-
-func (ng *NekudoGeoIp) Unmarshal(b []byte) error {
-	e := json.Unmarshal(b, &ng)
-	if e != nil {
-		return e
+	err := api.Unmarshal(b)
+	if err != nil {
+		return "", err
 	}
-	return nil
+	return api.GetCountryName(), nil
 }

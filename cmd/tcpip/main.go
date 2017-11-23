@@ -5,13 +5,28 @@ import (
 	"try/countryip"
 )
 
+const FreeGeoIp = "service:freegeoip"
+
 func main() {
+	s, _ := GetCountry("8.8.8.8")
+	fmt.Println(s)
+}
+
+func GetCountry(ip string) (string, error) {
 	c := countryip.ReadConfig("config.json")
-	b, e := countryip.GetRequest(fmt.Sprintf(c.Services.FreeGeoip.Url, "31.132.176.174"))
-	if e != nil {
-		panic(e)
+	service := countryip.NewApiService(c)
+	in, e := service.GetKey(FreeGeoIp)
+
+	if in <= c.Services.FreeGeoip.Limit && e == nil {
+		gi := countryip.NewFreeGeoIp(c)
+		return gi.GetCountryNameByIp(ip)
+	} else {
+		gi := countryip.NewNekudoGeoIp(c)
+		return gi.GetCountryNameByIp(ip)
 	}
-	fg := &countryip.FreeGeoIp{}
-	fg.Unmarshal(b)
-	fmt.Println(fg.CountryName)
+
+	if e != nil {
+		return "", e
+	}
+
 }

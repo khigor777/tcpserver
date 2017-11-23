@@ -2,17 +2,20 @@
   "db":{
     "redis":{
       "ip":"localhost",
-      "port":"6379"
+      "port":"6379",
+      "ip_key_cache":86400
     }
   },
   "services": {
     "freegeoip":{
       "url":"http://freegeoip.net/json/%s",
-      "limit":15000
+      "limit":15000,
+      "lifetime_cache":3600
     },
     "nekudo":{
-      "url":"",
-      "limit":0
+      "url":"http://geoip.nekudo.com/api/%s",
+      "limit":0,
+      "lifetime_cache":0
     }
   }
 }
