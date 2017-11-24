@@ -11,11 +11,13 @@
       "url":"http://freegeoip.net/json/%s",
       "limit":15000,
       "lifetime_cache":3600
+
     },
     "nekudo":{
       "url":"http://geoip.nekudo.com/api/%s",
       "limit":0,
       "lifetime_cache":0
+
     }
   }
 }
