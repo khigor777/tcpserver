@@ -23,32 +23,6 @@ type Config struct {
 	} `json:"services"`
 }
 
-/*
-
-{
-  "db":{
-    "redis":{
-      "ip":"localhost",
-      "port":"6379",
-      "ip_key_cache":86400
-    }
-  },
-  "services": {
-    "freegeoip":{
-      "url":"http://freegeoip.net/json/%s",
-      "limit":15000,
-      "lifetime_cache":3600
-    },
-    "nekudo":{
-      "url":"http://geoip.nekudo.com/api/%s",
-      "limit":0,
-      "lifetime_cache":0
-    }
-  }
-}
-
-*/
-
 type Api interface {
 	GetCountryNameByIp(ip string) (string, error)
 	GetUrl(ip string) string
